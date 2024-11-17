@@ -259,7 +259,7 @@ void Database::Open(const std::string& path) {
   SQLITE3_CALL(sqlite3_open_v2(
       path.c_str(),
       &database_,
-      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX,
+      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
       nullptr));
 
   // Don't wait for the operating system to write the changes to disk

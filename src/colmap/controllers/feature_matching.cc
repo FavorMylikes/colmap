@@ -85,11 +85,12 @@ class FeatureMatcherThread : public Thread {
       timer.Start();
       const std::vector<std::pair<image_t, image_t>> image_pairs =
           pair_generator->Next();
-      std::unique_ptr<DatabaseTransaction> database_transaction;
-      cache_->AccessDatabase([&database_transaction](Database& database) {
-        database_transaction = std::make_unique<DatabaseTransaction>(&database);
-      });
-      matcher_.Match(image_pairs);
+      if constexpr(std::is_same<DerivedPairGenerator, VocabfreePairGenerator>){
+          matcher_->Match(image_pairs);
+      } else {
+          DatabaseTransaction database_transaction(database_.get());
+          matcher_->Match(image_pairs);
+      }
       PrintElapsedTime(timer);
     }
     run_timer.PrintMinutes();
